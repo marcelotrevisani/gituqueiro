@@ -1,0 +1,165 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact: gituqueiro
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact: gituqueiro
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            artifact: gituqueiro
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact: gituqueiro.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+
+      - name: Set version from tag
+        shell: bash
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          sed -i.bak "s/^version = \".*\"/version = \"${VERSION}\"/" Cargo.toml
+          rm -f Cargo.toml.bak
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-dev libxkbcommon-dev
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Run tests
+        run: cargo test --all-targets --target ${{ matrix.target }}
+
+      - name: Prepare binary artifact
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp target/${{ matrix.target }}/release/${{ matrix.artifact }} dist/
+          cd dist
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            7z a ../gituqueiro-${{ github.event.release.tag_name }}-${{ matrix.target }}.zip ${{ matrix.artifact }}
+          else
+            tar czf ../gituqueiro-${{ github.event.release.tag_name }}-${{ matrix.target }}.tar.gz ${{ matrix.artifact }}
+          fi
+
+      - name: Upload binary archive
+        uses: softprops/action-gh-release@v2
+        with:
+          files: gituqueiro-${{ github.event.release.tag_name }}-${{ matrix.target }}.*
+
+  package-deb:
+    name: Package .deb (Linux)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-deb
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-dev libxkbcommon-dev
+
+      - name: Set version from tag
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          sed -i.bak "s/^version = \".*\"/version = \"${VERSION}\"/" Cargo.toml
+          rm -f Cargo.toml.bak
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Build .deb package
+        run: cargo deb --no-build
+
+      - name: Rename .deb with tag
+        run: |
+          DEB=$(ls target/debian/*.deb | head -1)
+          cp "$DEB" "target/debian/gituqueiro-${{ github.event.release.tag_name }}-amd64.deb"
+
+      - name: Upload .deb
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/debian/gituqueiro-${{ github.event.release.tag_name }}-amd64.deb
+
+  package-msi:
+    name: Package .msi (Windows)
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-msi
+
+      - name: Install WiX Toolset
+        run: |
+          dotnet tool install --global wix --version 4.0.6
+          wix extension add WixToolset.UI.wixext/4.0.6 -g
+
+      - name: Set version from tag
+        shell: bash
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          sed -i.bak "s/^version = \".*\"/version = \"${VERSION}\"/" Cargo.toml
+          rm -f Cargo.toml.bak
+
+      - name: Install cargo-wix
+        run: cargo install cargo-wix --version 0.3.8
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Initialize WiX and build .msi
+        run: |
+          cargo wix init
+          cargo wix --no-build --nocapture
+
+      - name: Rename .msi with tag
+        shell: bash
+        run: |
+          MSI=$(ls target/wix/*.msi | head -1)
+          cp "$MSI" "target/wix/gituqueiro-${{ github.event.release.tag_name }}-x86_64.msi"
+
+      - name: Upload .msi
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/wix/gituqueiro-${{ github.event.release.tag_name }}-x86_64.msi

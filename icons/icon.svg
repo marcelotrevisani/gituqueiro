@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1b26"/>
+      <stop offset="100%" stop-color="#24283b"/>
+    </linearGradient>
+    <linearGradient id="bubble" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#3d4f7c"/>
+      <stop offset="100%" stop-color="#2a3563"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+
+  <!-- Speech bubble (fofoqueiro = gossip) -->
+  <path d="M 180 220
+           C 180 165, 225 130, 290 130
+           L 734 130
+           C 799 130, 844 165, 844 220
+           L 844 570
+           C 844 625, 799 660, 734 660
+           L 430 660
+           L 280 820
+           L 310 660
+           L 290 660
+           C 225 660, 180 625, 180 570
+           Z"
+        fill="url(#bubble)" stroke="#7aa2f7" stroke-width="10" stroke-linejoin="round"
+        filter="url(#shadow)"/>
+
+  <!-- Git branch: main line (vertical) -->
+  <line x1="400" y1="260" x2="400" y2="550" stroke="#7dcfff" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Git branch: fork line going right-up -->
+  <path d="M 400 380 C 460 380, 560 340, 640 300" fill="none" stroke="#bb9af7" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Git branch: merge line coming back -->
+  <path d="M 640 420 C 560 460, 460 480, 400 490" fill="none" stroke="#bb9af7" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Branch vertical segment -->
+  <line x1="640" y1="300" x2="640" y2="420" stroke="#bb9af7" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- Commit nodes on main branch -->
+  <circle cx="400" cy="260" r="28" fill="#7dcfff"/>
+  <circle cx="400" cy="260" r="14" fill="#1a1b26"/>
+
+  <circle cx="400" cy="380" r="28" fill="#7dcfff"/>
+  <circle cx="400" cy="380" r="14" fill="#1a1b26"/>
+
+  <circle cx="400" cy="490" r="28" fill="#7dcfff"/>
+  <circle cx="400" cy="490" r="14" fill="#1a1b26"/>
+
+  <circle cx="400" cy="550" r="28" fill="#7dcfff"/>
+  <circle cx="400" cy="550" r="14" fill="#1a1b26"/>
+
+  <!-- Commit nodes on feature branch -->
+  <circle cx="640" cy="300" r="28" fill="#bb9af7"/>
+  <circle cx="640" cy="300" r="14" fill="#1a1b26"/>
+
+  <circle cx="640" cy="420" r="28" fill="#bb9af7"/>
+  <circle cx="640" cy="420" r="14" fill="#1a1b26"/>
+
+  <!-- Small decorative dots (gossip/activity indicator) -->
+  <circle cx="760" cy="220" r="10" fill="#7aa2f7" opacity="0.6"/>
+  <circle cx="790" cy="250" r="7" fill="#7aa2f7" opacity="0.4"/>
+  <circle cx="800" cy="200" r="5" fill="#7aa2f7" opacity="0.3"/>
+</svg>
