@@ -5,6 +5,11 @@ edition = "2021"
 description = "Desktop app for monitoring GitHub Pull Requests and repository health"
 license = "MIT"
 authors = ["Marcelo Duarte Trevisani"]
+repository = "https://github.com/marcelotrevisani/gituqueiro"
+homepage = "https://github.com/marcelotrevisani/gituqueiro"
+readme = "README.md"
+keywords = ["github", "pull-request", "monitoring", "desktop", "iced"]
+categories = ["development-tools"]
 
 [dependencies]
 iced = { version = "0.13", features = ["tokio", "image"] }
