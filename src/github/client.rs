@@ -1,4 +1,5 @@
 use crate::github::types::*;
+use crate::github::build_http_client;
 use reqwest::Client;
 
 pub struct GitHubClient {
@@ -10,7 +11,7 @@ pub struct GitHubClient {
 impl GitHubClient {
     pub fn new(token: &str) -> Self {
         Self {
-            client: Client::new(),
+            client: build_http_client(),
             token: token.to_string(),
             base_url: "https://api.github.com".to_string(),
         }
@@ -19,7 +20,7 @@ impl GitHubClient {
     #[cfg(test)]
     pub fn with_base_url(token: &str, base_url: &str) -> Self {
         Self {
-            client: Client::new(),
+            client: build_http_client(),
             token: token.to_string(),
             base_url: base_url.to_string(),
         }
