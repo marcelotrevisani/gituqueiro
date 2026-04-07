@@ -1,5 +1,5 @@
-use crate::github::types::*;
 use crate::github::build_http_client;
+use crate::github::types::*;
 use reqwest::Client;
 
 pub struct GitHubClient {
