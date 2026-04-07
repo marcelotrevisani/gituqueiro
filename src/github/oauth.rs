@@ -1,4 +1,4 @@
-use reqwest::Client;
+use crate::github::build_http_client;
 use serde::Deserialize;
 
 // ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ pub struct AccessTokenResponse {
 /// Step 1: Request a device code and user code from GitHub.
 /// Returns the codes the user needs to enter at verification_uri.
 pub async fn start_device_flow(client_id: &str) -> Result<DeviceCodeResponse, String> {
-    let client = Client::new();
+    let client = build_http_client();
     let resp = client
         .post(DEVICE_CODE_URL)
         .header("Accept", "application/json")
@@ -72,7 +72,7 @@ pub async fn poll_for_token(
     device_code: String,
     interval: u64,
 ) -> Result<String, String> {
-    let client = Client::new();
+    let client = build_http_client();
     let mut interval_secs = interval;
     let grant_type = "urn:ietf:params:oauth:grant-type:device_code".to_string();
 
