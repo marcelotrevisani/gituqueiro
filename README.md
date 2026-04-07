@@ -33,6 +33,29 @@ A desktop app for monitoring GitHub Pull Requests, CI status, and repository hea
 
 ## Installation
 
+### Homebrew (macOS)
+
+```bash
+brew install marcelotrevisani/tap/gituqueiro
+```
+
+Or install as a macOS app (`.dmg` with Dock icon):
+
+```bash
+brew install --cask marcelotrevisani/tap/gituqueiro
+```
+
+### Download
+
+Pre-built binaries are available on the [Releases](https://github.com/marcelotrevisani/gituqueiro/releases) page:
+
+| Platform | Format |
+|----------|--------|
+| macOS (universal) | `.dmg` |
+| macOS (x86_64 / aarch64) | `.tar.gz` |
+| Linux (x86_64) | `.tar.gz`, `.deb` |
+| Windows (x86_64) | `.zip`, `.msi` |
+
 ### From source
 
 ```bash
@@ -52,7 +75,7 @@ just run-app
 
 This builds a proper `Gituqueiro.app` with the icon in the Dock.
 
-### Requirements
+### Requirements (building from source)
 
 - Rust 1.75+
 - System dependencies:

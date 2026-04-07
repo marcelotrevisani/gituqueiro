@@ -45,6 +45,10 @@ check: format-check lint test
 app config="release" version="dev":
     ./scripts/build-app.sh {{ config }} {{ version }}
 
+# Build DMG installer (default version: dev)
+dmg version="dev":
+    ./scripts/build-dmg.sh {{ version }}
+
 # Run as macOS .app (builds release first)
 run-app: (app "release")
     open build/Gituqueiro.app

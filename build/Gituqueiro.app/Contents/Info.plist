@@ -9,9 +9,9 @@
     <key>CFBundleIdentifier</key>
     <string>com.marcelotrevisani.gituqueiro</string>
     <key>CFBundleVersion</key>
-    <string>dev</string>
+    <string>0.1.0</string>
     <key>CFBundleShortVersionString</key>
-    <string>dev</string>
+    <string>0.1.0</string>
     <key>CFBundleExecutable</key>
     <string>gituqueiro</string>
     <key>CFBundleIconFile</key>
